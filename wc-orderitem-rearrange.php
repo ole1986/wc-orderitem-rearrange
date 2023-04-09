@@ -1,15 +1,15 @@
 <?php
 /*
- * Plugin Name: WC Rearrange Order Items
+ * Plugin Name: Rearrange Order Items for WooCommerce
  * Description: Rearrange Woocommerce Order Item from admin backend
- * Version: 1.0.0
+ * Version: 1.0.4
  * Author: ole1986 <ole.koeckemann@gmail.com>
  * Author URI: https://github.com/ole1986/wc-orderitem-rearrange
  * Plugin URI: https://github.com/ole1986/wc-orderitem-rearrange/releases
  * Text Domain: wc-orderitem-rearrange
  *
  * WC requires at least: 3.0.0
- * WC tested up to: 7.0
+ * WC tested up to: 7.5
  */
 
 namespace Ole1986\WcOrderItemRearrange;
@@ -44,9 +44,8 @@ class WcOrderItemRearrange
         $item_id = intval($_POST['item_id']);
         $direction = intval($_POST['direction']);
 
-        if (empty($item_id)) {
-            wp_die();
-        }
+        if (empty($item_id)) wp_die();
+        if (is_null($direction)) wp_die();
 
         $orderItem = new \WC_Order_Item_Product($item_id);
         $order = wc_get_order($orderItem->get_order_id());
@@ -59,12 +58,12 @@ class WcOrderItemRearrange
 
         if (!$swap_id) return;
 
-        $results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}woocommerce_order_itemmeta WHERE order_item_id IN({$item_id}, {$swap_id})", OBJECT);
+        $results = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}woocommerce_order_itemmeta WHERE order_item_id = %d OR order_item_id = %d", $item_id, $swap_id), OBJECT);
         $meta_ids = array_column($results, 'meta_id');
 
-        $wpdb->query("UPDATE {$wpdb->prefix}woocommerce_order_itemmeta SET order_item_id = IF(order_item_id = {$item_id}, {$swap_id}, {$item_id}) WHERE meta_id IN (" . implode(',', $meta_ids) . ")");
+        $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}woocommerce_order_itemmeta SET order_item_id = IF(order_item_id = %d, %d, %d) WHERE meta_id IN (" . implode(',', $meta_ids) . ")", $item_id, $swap_id, $item_id));
 
-        $results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}woocommerce_order_items WHERE order_item_id IN({$item_id}, {$swap_id})", OBJECT);
+        $results = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}woocommerce_order_items WHERE order_item_id = %d OR order_item_id = %d", $item_id, $swap_id), OBJECT);
         $resultIds = array_column($results, 'order_item_id');
 
         foreach ($results as $item) {
@@ -79,8 +78,8 @@ class WcOrderItemRearrange
         $css = 'font-size:1.2em; margin-right: 0.5em; padding: 0.2em; text-decoration:none';
         ?>
         <div style="margin-top: 1em;">
-            <a href="javascript:void(0)" style="<?php echo $css ?>" onclick="WcOrderItemRearrange.MoveOrderItem(this, <?php echo $item_id ?>, 0)">⇧</span></a>
-            <a href="javascript:void(0)" style="<?php echo $css ?>" onclick="WcOrderItemRearrange.MoveOrderItem(this, <?php echo $item_id ?>, 1)">⇩</span></a>
+            <a href="javascript:void(0)" style="<?php echo esc_attr($css) ?>" onclick="WcOrderItemRearrange.MoveOrderItem(this, <?php echo esc_attr($item_id) ?>, 0)">⇧</span></a>
+            <a href="javascript:void(0)" style="<?php echo esc_attr($css) ?>" onclick="WcOrderItemRearrange.MoveOrderItem(this, <?php echo esc_attr($item_id) ?>, 1)">⇩</span></a>
         </div>
         <?php
     }

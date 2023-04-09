@@ -1,9 +1,9 @@
-=== WC Order Item Rearrange ===
+=== Rearrange Order Items for WooCommerce ===
 Contributors: ole1986
 Tags:  woocommerce, WC, rearrange, order items, orders, sorting, reorder
 Requires at least: 3.1
 Tested up to: 6.2
-Stable tag: trunk
+Stable tag: 1.0.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
