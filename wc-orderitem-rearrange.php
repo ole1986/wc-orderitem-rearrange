@@ -2,14 +2,14 @@
 /*
  * Plugin Name: Rearrange Order Items for WooCommerce
  * Description: Rearrange Woocommerce Order Item from admin backend
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: ole1986 <ole.koeckemann@gmail.com>
  * Author URI: https://github.com/ole1986/wc-orderitem-rearrange
  * Plugin URI: https://github.com/ole1986/wc-orderitem-rearrange/releases
  * Text Domain: wc-orderitem-rearrange
  *
  * WC requires at least: 3.0.0
- * WC tested up to: 7.5
+ * WC tested up to: 8.4
  */
 
 namespace Ole1986\WcOrderItemRearrange;
