@@ -2,7 +2,7 @@
 Contributors: ole1986
 Tags:  woocommerce, WC, rearrange, order items, orders, sorting, reorder
 Requires at least: 3.1
-Tested up to: 6.4
+Tested up to: 6.7
 Stable tag: 1.0.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

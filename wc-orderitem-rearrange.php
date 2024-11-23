@@ -2,14 +2,14 @@
 /*
  * Plugin Name: Rearrange Order Items for WooCommerce
  * Description: Rearrange Woocommerce Order Item from admin backend
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: ole1986 <ole.koeckemann@gmail.com>
  * Author URI: https://github.com/ole1986/wc-orderitem-rearrange
  * Plugin URI: https://github.com/ole1986/wc-orderitem-rearrange/releases
  * Text Domain: wc-orderitem-rearrange
  *
  * WC requires at least: 3.0.0
- * WC tested up to: 8.4
+ * WC tested up to: 9.4
  */
 
 namespace Ole1986\WcOrderItemRearrange;
@@ -18,7 +18,6 @@ defined('ABSPATH') or die('No script kiddies please!');
 
 define('WCORDERITEMREARRANGE_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WCORDERITEMREARRANGE_PLUGIN_URL', plugin_dir_url(__FILE__));
-
 
 class WcOrderItemRearrange
 {
@@ -44,8 +43,12 @@ class WcOrderItemRearrange
         $item_id = intval($_POST['item_id']);
         $direction = intval($_POST['direction']);
 
-        if (empty($item_id)) wp_die();
-        if (is_null($direction)) wp_die();
+        if (empty($item_id)) {
+            wp_die();
+        }
+        if (is_null($direction)) {
+            wp_die();
+        }
 
         $orderItem = new \WC_Order_Item_Product($item_id);
         $order = wc_get_order($orderItem->get_order_id());
@@ -56,7 +59,9 @@ class WcOrderItemRearrange
         $swapKey = $direction == 1 ? $key + 1 : $key - 1;
         $swap_id = $itemIds[$swapKey];
 
-        if (!$swap_id) return;
+        if (!$swap_id) {
+            return;
+        }
 
         $results = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}woocommerce_order_itemmeta WHERE order_item_id = %d OR order_item_id = %d", $item_id, $swap_id), OBJECT);
         $meta_ids = array_column($results, 'meta_id');
@@ -85,7 +90,13 @@ class WcOrderItemRearrange
     }
 }
 
-
 $app = new WcOrderItemRearrange();
+
+add_action('before_woocommerce_init', function () {
+    // Support for WooCommerce High Performance Order Storage
+    if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+    }
+});
 
 add_action('init', [$app, 'init']);
