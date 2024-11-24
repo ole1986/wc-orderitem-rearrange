@@ -20,7 +20,7 @@ services:
     ports:
       - 3306:3306
   wordpress:
-    image: wordpress
+    image: wordpress_local
     container_name: wp_wc_orderitem_rearrange
     depends_on:
     - db
