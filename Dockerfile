@@ -18,7 +18,6 @@ RUN apt install -y nodejs npm
 
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
 
-COPY wp-install.sh /wp-install.sh
 RUN <<EOF cat >> /start.sh
 /usr/local/bin/apache2-foreground &
 sleep 5
@@ -26,11 +25,17 @@ sleep 5
 tail -f /dev/null
 EOF
 
-RUN chmod 755 /start.sh && chmod 755 /wp-install.sh
+RUN chmod 755 /start.sh
 RUN chown -R www-data /var/www
 
 USER www-data
 RUN wp core download && \
     wp config create --skip-check --dbhost=db --dbname=wordpress --dbuser=wordpress --dbpass=wordpress --locale=de_DE
 
+# make sure copy the wp-install script at the end
+USER root
+COPY ./wp-install.sh /wp-install.sh
+RUN chmod 755 /wp-install.sh
+
+USER www-data
 CMD ["/start.sh"]
