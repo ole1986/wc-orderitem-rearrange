@@ -7,11 +7,16 @@ jobs:
     if: "!github.event.release.prerelease"
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: WordPress Plugin Deploy
-      uses: 10up/action-wordpress-plugin-deploy@develop
-      env:
-        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-        SLUG: wc-rearrange-order-items
-        ASSETS_DIR: assets
+      - uses: actions/checkout@v3
+      - name: WordPress Plugin Deploy
+        uses: 10up/action-wordpress-plugin-deploy@develop
+        env:
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SLUG: wc-rearrange-order-items
+          ASSETS_DIR: assets
+      - uses: lakto/gren-action@v2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          options: "--override"
