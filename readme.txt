@@ -3,7 +3,7 @@ Contributors: ole1986
 Tags:  woocommerce, rearrange, sort, order items, orders
 Requires at least: 3.1
 Tested up to: 6.7
-Stable tag: 1.0.0
+Stable tag: trunk
 License: MIT
 
 Allow rearrange WooCommerce order items from the admin backend
